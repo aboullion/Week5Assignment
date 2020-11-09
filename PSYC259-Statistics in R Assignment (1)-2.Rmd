@@ -6,13 +6,75 @@ output: html_document
 ---
 ##Part 1
 1. Open the diamonds dataset from ggplot2.   
+```{r}
+library(ggplot2)
+data("diamonds")
+```
+
 2. Run a correlation between the x and y variables. What do you notice? 
+```{r}
+cor.test(diamonds$x, diamonds$y)
+#there is a strong significant positive correlation. 
+#The variables are essentially measuring the same thing. 
+#There is also a very small CI. 
+```
+
 3. What is the correlation between price and carat?
+```{r}
+cor.test(diamonds$carat, diamonds$price)
+#there is a strong, positive, significant relationship between carat and price 
+#of the diamonds. The CI is also very tight. 
+```
+
 4. Create a linear model predicting price from table. What is the coefficient for table? 
+```{r}
+Q4lm <- lm(price ~ table, data = diamonds)
+summary(Q4lm)
+#226.984      
+```
+
 5. Run a regression and an Anova predicting price from color. What do you notice? 
+```{r}
+Q5lmreg <- lm(price ~color, data = diamonds)
+summary(Q5lmreg)
+library(tidyr)
+library(car)
+anova(lm(Q5lmreg))
+anova(Q5lmreg)
+Anova(lm(Q5lmreg))
+Anova(Q5lmreg)
+
+#well first of all, I don't recall going over 
+#the differences of these ANOVA functions
+#Buuuut, in ALL these models the F statistic is the same
+```
+
 6. Open the warpbreaks dataset. What test would you use to determine the correlation between wool type and breaks?
+```{r}
+data("warpbreaks")
+
+class(warpbreaks$wool)
+class(warpbreaks$breaks)
+levels(warpbreaks$wool)
+```
+
 7. What is the correlation between wool type and breaks? 
+```{r}
+Q7cor <- glm(wool~breaks, data = warpbreaks, family = "binomial")
+summary(Q7cor)
+```
+-0.03648: a nonsignificant weak, negative correlation
+
+
 8. A student has a 25 question, multiple choice test. Each question has 4 choices. If they answered 17 questions correctly, did their responses differ from chance?  
+```{r}
+
+```
+
+
+
+
+
 
 --------------------------
 ##Part 2
@@ -36,31 +98,72 @@ minority: if minority or not
 ses: child's socioeconomic status
 
 1. Import the multilevel data from the SchoolsClassStudents.csv file
+```{r}
+Part2data <- read.csv("schoolsClassStudents.csv")
+```
 
 2. Scale and center your mathgain, ses, and mathprep variables.
+```{r}
+Part2data$Cmathgain <-scale(Part2data$mathgain)
+Part2data$Cses <- scale(Part2data$ses)
+Part2data$Cmathprep <- scale(Part2data$mathprep)
+```
 
 3. Load lme4 and lmerTest
+```{r}
+library(lme4)
+library(lmerTest)
+```
 
 4. Run an intercept only model predicting math improvement for students.
+```{r}
+Q4Bmodel <- lmer(classid ~ 1 + (1 | Cmathgain), data = Part2data)
+summary(Q4Bmodel)
+```
 
 BONUS: What is the between-class variance? What is the within-class variance?
+between-class: 157.512      
+within-class : 2.633  
+?? IDK honestly
 
 5. Run a model of students nested within classrooms to determine if the first-level predictor of child SES predicts child's improvement in scores, without modeling a random slope.
+```{r}
+Q5model<- lmer(Cmathgain ~ Cmathprep + (1 | classid), data = Part2data)
+summary(Q5model)
+```
 
 BONUS: What does this tell us and what does a fixed slope not tell us?
 
 6. Compare the model from level-1 predictor model of SES (question 5) to the intercept only model with a likelihood ratio test
+```{r}
+
+```
 
 7. Run the level-1 predictor model of SES (question 5) but now model with a random slope for SES. Does your inference change? What parameter in the output is new with a random slope for SES?
+```{r}
+
+```
 
 BONUS: You get a warning here. What is it and why might you be getting it?
 
 8. Compare the level-1 predictor model of SES with a fixed slope and random intercept (question 5) to the intercept-only model (question 4). Now, compare the level-1 predictor model of SES with a random slope and random intercept (question 7) to the intercept-only model. How does your inference differ? What do these different LRTs tell you?
+```{r}
+
+```
 
 9. Run a model to determine of students nested within classrooms to determine if the level 2 predictor of teacher's preparatory courses predict child's improvement in scores?
+```{r}
+
+```
 
 10. Run a model with an interaction between student level SES and classroom level preparatory courses (i.e. cross-level interaction) predicting child math improvements, without modeling either as a random slope.
+```{r}
+
+```
 
 11. Run a model with a cross-level interaction between student level SES and classroom level preparatory courses predicting child math improvement, while modeling SES as a random slope.
+```{r}
+
+```
 
 BONUS: What looks different between the model in question eight versus the model in question nine? Why might this be?
